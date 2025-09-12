@@ -1,0 +1,5 @@
+
+config general 'general'
+	option debug '0'
+
+
