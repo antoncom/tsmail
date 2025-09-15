@@ -32,15 +32,16 @@ function app.make_ubus()
         ["tsmail"] = {
             send = {
                 function (req, msg)
-                    local from_email = tostring(msg["from_email"])
-                    local to_email = tostring(msg["to_email"])
-                    local title = tostring(msg["title"])
-                    local message = tostring(msg["message"])
+                    local from = msg["from"]
+                    local to = msg["to"]
+                    local subj = msg["subj"]
+                    local body = msg["body"]
+                    local attach = msg["attach"]
 
-                    local status, result = mailsend.send(from_email, to_email, title, message)
+                    local status, result = mailsend.send(from, to, subj, body, attach)
 
                     app.conn:reply(req, { status = status, result = result } )
-                end, { from_email = ubus.STRING, to_email = ubus.STRING, title = ubus.STRING, message = ubus.STRING }
+                end, { from = ubus.STRING, to = ubus.STRING, subj = ubus.STRING, body = ubus.STRING, attach = ubus.STRING }
             }
         }
     }
