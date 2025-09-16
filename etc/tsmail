@@ -1,5 +1,9 @@
 
 config general 'general'
 	option debug '0'
-
-
+	option smtp_server '127.0.0.1'
+	option smtp_port '25'
+	option use_starttls '0'
+	option use_auth '0'
+	option auth_user ''
+	option auth_password ''
