@@ -25,11 +25,16 @@ function app.init()
     else
         local smtp_server = uci:get("tsmail", "general", "smtp_server")
         local smtp_port = uci:get("tsmail", "general", "smtp_port")
+        local use_ssl = (uci:get("tsmail", "general", "use_ssl") == "1")
         local use_starttls = (uci:get("tsmail", "general", "use_starttls") == "1")
         local use_auth = (uci:get("tsmail", "general", "use_auth") == "1")
 
         if not (smtp_server and smtp_port) then
             error("Add smtp_server and smtp_port fields in uci config")
+        end
+
+        if use_ssl and use_starttls then
+            error("Config error: use_ssl and use_starttls fields can not be enabled at the same time")
         end
 
         local auth_user, auth_password = "", ""
@@ -40,12 +45,13 @@ function app.init()
 
         if_debug("uci_config", "smtp_server", smtp_server)
         if_debug("uci_config", "smtp_port", smtp_port)
+        if_debug("uci_config", "use_ssl", use_ssl)
         if_debug("uci_config", "use_starttls", use_starttls)
         if_debug("uci_config", "use_auth", use_auth)
         if_debug("uci_config", "auth_user", auth_user)
         if_debug("uci_config", "auth_password (length)", string.len(auth_password))
 
-        mailsend.init(app, smtp_server, smtp_port, use_starttls, use_auth, auth_user, auth_password)
+        mailsend.init(app, smtp_server, smtp_port, use_ssl, use_starttls, use_auth, auth_user, auth_password)
         app.make_ubus()
     end
 end

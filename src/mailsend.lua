@@ -2,16 +2,18 @@ local mailsend = {
     app = nil,
     smtp_server = "",
     port = "",
+    use_ssl = false,
     use_starttls = false,
     use_auth = false,
     auth_user = "",
     auth_password = "",
 }
 
-function mailsend.init(app, smtp_server, port, use_starttls, use_auth, auth_user, auth_password)
+function mailsend.init(app, smtp_server, port, use_ssl, use_starttls, use_auth, auth_user, auth_password)
     mailsend.app = app
     mailsend.smtp_server = smtp_server
     mailsend.port = port
+    mailsend.use_ssl = use_ssl or false
     mailsend.use_starttls = use_starttls or false
     mailsend.use_auth = use_auth or false
     mailsend.auth_user = auth_user or ""
@@ -35,7 +37,9 @@ function mailsend.send(from, to, subj, body, attach)
         cmd = cmd .. string.format(" -attach %q", attach)
     end
 
-    if mailsend.use_starttls then
+    if mailsend.use_ssl then
+        cmd = cmd .. " -ssl"
+    elseif mailsend.use_starttls then
         cmd = cmd .. " -starttls"
     end
 
