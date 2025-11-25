@@ -59,6 +59,11 @@ function mailsend.send(from, to, subj, body, attach)
         if shell_result:find("Error") then
             os.remove(log_file_path)
             mailsend.app.conn:notify(mailsend.app.ubus_methods["tsmail"].__ubusobj, "ERROR", { result = shell_result })
+
+            if attach and attach ~= "" then
+                os.remove(attach)
+            end
+
             return 'error', shell_result
         end
     end
@@ -71,13 +76,14 @@ function mailsend.send(from, to, subj, body, attach)
         if log:find("Mail sent successfully") then
             status = "ok"
             result = "Mail sent successfully"
-            if attach and attach ~= "" then
-                os.remove(attach)
-            end
         else
             status = "error"
             result = log
             mailsend.app.conn:notify(mailsend.app.ubus_methods["tsmail"].__ubusobj, "ERROR", { result = result })
+        end
+
+        if attach and attach ~= "" then
+            os.remove(attach)
         end
     end
 
